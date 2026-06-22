@@ -1,12 +1,11 @@
 <?php
 
+use App\Http\Controllers\VitController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home2');
-});
+Route::get('/', [VitController::class, 'index']);
 
 Auth::routes();
 
-Route::get('/home2', [App\Http\Controllers\Home2Controller::class, 'index'])->name('home2');
+Route::get('/home2', [VitController::class, 'index'])->name('home2');
