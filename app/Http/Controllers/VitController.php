@@ -59,24 +59,34 @@ class VitController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Vit $vit)
     {
-        //
+        return view('vits.edit', compact('vit'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Vit $vit)
     {
-        //
+        
+    
+        $validated = $request->validate([
+            'message' => 'required|string|max:255',
+        ]);    
+
+        $vit->update($validated);
+
+        return redirect('/')->with('success', 'Vit updated!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Vit $vit)
     {
-        //
+        $vit->delete();
+        
+        return redirect('/')->with('success', 'Vit deleted!');
     }
 }
