@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Vit;
+use Illuminate\Auth\Events\Validated;
 
 class VitController extends Controller
 {
@@ -33,20 +34,14 @@ class VitController extends Controller
      */
     public function store(Request $request)
     {
-    $validated = $request->validate([
-        'message' => 'required|string|max:255',
-    ], [
-        'message.required' => 'Please write something to vit!',
-        'message.max' => 'Vits must be 255 characters or less.',
-    ]);
+        $validated = $request->validate([
+            'message' => 'required|string|max:255',
+        ]);
 
-    \App\Models\Vit::create([
-        'message' => $validated['message'],
-        'user_id' => null,
-    ]);
+        auth()->user()->vits()->create($validated);
 
-    return redirect('/')->with('success', 'Your vit has been posted!');
-}
+        return redirect('/home2')->with('success', 'Your vit has been posted!');
+    }
 
     /**
      * Display the specified resource.
@@ -61,6 +56,8 @@ class VitController extends Controller
      */
     public function edit(Vit $vit)
     {
+        $this->authorize('update', $vit);
+
         return view('vits.edit', compact('vit'));
     }
 
@@ -71,13 +68,15 @@ class VitController extends Controller
     {
         
     
+        $this->authorize('update', $vit);
+
         $validated = $request->validate([
             'message' => 'required|string|max:255',
-        ]);    
+        ]);
 
         $vit->update($validated);
 
-        return redirect('/')->with('success', 'Vit updated!');
+        return redirect('/home2')->with('success', 'Vit updated!');
     }
 
     /**
@@ -85,8 +84,10 @@ class VitController extends Controller
      */
     public function destroy(Vit $vit)
     {
+        $this->authorize('delete', $vit);
+
         $vit->delete();
-        
-        return redirect('/')->with('success', 'Vit deleted!');
+
+        return redirect('/home2')->with('success', 'Chirp deleted!');
     }
 }
