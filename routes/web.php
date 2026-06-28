@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [VitController::class, 'index']);
+Route::post('/vits', [VitController::class, 'store']);
 
 Auth::routes();
 
